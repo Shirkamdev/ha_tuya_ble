@@ -9,19 +9,19 @@ from typing import Any, Iterable
 
 from homeassistant.const import CONF_ADDRESS, CONF_DEVICE_ID
 from homeassistant.core import HomeAssistant
+from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.components.tuya.const import (
-    CONF_ACCESS_ID,
-    CONF_ACCESS_SECRET,
-    CONF_APP_TYPE,
-    CONF_AUTH_TYPE,
-    CONF_COUNTRY_CODE,
-    CONF_ENDPOINT,
-    CONF_PASSWORD,
-    CONF_USERNAME,
     DOMAIN as TUYA_DOMAIN,
     TUYA_RESPONSE_RESULT,
     TUYA_RESPONSE_SUCCESS,
 )
+
+CONF_AUTH_TYPE = "auth_type"
+CONF_ENDPOINT = "endpoint"
+CONF_ACCESS_ID = "access_id"
+CONF_ACCESS_SECRET = "access_secret"
+CONF_COUNTRY_CODE = "country_code"
+CONF_APP_TYPE = "tuya_app_type"
 from homeassistant.helpers.entity import DeviceInfo, EntityDescription
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
