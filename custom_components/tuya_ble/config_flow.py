@@ -46,6 +46,18 @@ from .const import (
 from .devices import TuyaBLEData, get_device_readable_name
 from .cloud import HASSTuyaBLEDeviceManager
 
+from dataclasses import dataclass
+from tuya_iot import TuyaCloudOpenAPIEndpoint
+
+
+@dataclass
+class Country:
+    """Describe a supported country."""
+
+    name: str
+    country_code: str
+    endpoint: str = TuyaCloudOpenAPIEndpoint.AMERICA
+
 # https://developer.tuya.com/en/docs/iot/oem-app-data-center-distributed?id=Kafi0ku9l07qb
 TUYA_COUNTRIES = [
     Country("Afghanistan", "93", TuyaCloudOpenAPIEndpoint.EUROPE),
