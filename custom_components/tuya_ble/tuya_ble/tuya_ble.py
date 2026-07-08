@@ -27,6 +27,7 @@ from .const import (
     GATT_MTU,
     MANUFACTURER_DATA_ID,
     RESPONSE_WAIT_TIMEOUT,
+    SERVICE_CHARACTERISTICS,
     SERVICE_UUIDS,
     TuyaBLECode,
     TuyaBLEDataPointType,
@@ -223,6 +224,8 @@ class TuyaBLEDevice:
         self._operation_lock = asyncio.Lock()
         self._connect_lock = asyncio.Lock()
         self._client: BleakClientWithServiceCache | None = None
+        self._characteristic_notify = CHARACTERISTIC_NOTIFY
+        self._characteristic_write = CHARACTERISTIC_WRITE
         self._expected_disconnect = False
         self._connected_callbacks: list[Callable[[], None]] = []
         self._callbacks: list[Callable[[list[TuyaBLEDataPoint]], None]] = []
@@ -536,7 +539,7 @@ class TuyaBLEDevice:
             self._expected_disconnect = True
             self._client = None
             if client and client.is_connected:
-                await client.stop_notify(CHARACTERISTIC_NOTIFY)
+                await client.stop_notify(self._characteristic_notify)
                 await client.disconnect()
         async with self._seq_num_lock:
             self._current_seq_num = 1
@@ -605,9 +608,16 @@ class TuyaBLEDevice:
                     _LOGGER.debug("%s: Connected; RSSI: %s",
                                   self.address, self.rssi)
                     self._client = client
+                    self._characteristic_notify = CHARACTERISTIC_NOTIFY
+                    self._characteristic_write = CHARACTERISTIC_WRITE
+                    for notify_uuid, write_uuid in SERVICE_CHARACTERISTICS.values():
+                        if client.services.get_characteristic(notify_uuid):
+                            self._characteristic_notify = notify_uuid
+                            self._characteristic_write = write_uuid
+                            break
                     try:
                         await self._client.start_notify(
-                            CHARACTERISTIC_NOTIFY, self._notification_handler
+                            self._characteristic_notify, self._notification_handler
                         )
                     except:  # [BLEAK_EXCEPTIONS, BleakNotFoundError]:
                         self._client = None
@@ -952,7 +962,7 @@ class TuyaBLEDevice:
                 try:
                     # _LOGGER.debug("%s: Sending packet: %s", self.address, packet.hex())
                     await self._client.write_gatt_char(
-                        CHARACTERISTIC_WRITE,
+                        self._characteristic_write,
                         packet,
                         False,
                     )
