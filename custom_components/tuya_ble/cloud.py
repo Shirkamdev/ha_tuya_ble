@@ -175,11 +175,27 @@ class HASSTuyaBLEDeviceManager(AbstaractTuyaBLEDeviceManager):
         if devices_response.get(TUYA_RESPONSE_SUCCESS):
             devices = devices_response.get(TUYA_RESPONSE_RESULT)
             if isinstance(devices, Iterable):
+                device_count = 0
                 for device in devices:
+                    device_count += 1
+                    _LOGGER.debug(
+                        "Cloud device found: id=%s name=%s category=%s product_id=%s",
+                        device.get("id"),
+                        device.get("name"),
+                        device.get("category"),
+                        device.get("product_id"),
+                    )
                     fi_response = await self._hass.async_add_executor_job(
                         item.api.get,
                         TUYA_API_FACTORY_INFO_URL % (device.get("id")),
                     )
+                    if not fi_response.get(TUYA_RESPONSE_SUCCESS):
+                        _LOGGER.debug(
+                            "Factory info request failed for device id=%s: %s",
+                            device.get("id"),
+                            fi_response,
+                        )
+                        continue
                     fi_response_result = fi_response.get(TUYA_RESPONSE_RESULT)
                     if fi_response_result and len(fi_response_result) > 0:
                         factory_info = fi_response_result[0]
@@ -188,6 +204,11 @@ class HASSTuyaBLEDeviceManager(AbstaractTuyaBLEDeviceManager):
                                 factory_info[TUYA_FACTORY_INFO_MAC][i : i + 2]
                                 for i in range(0, 12, 2)
                             ).upper()
+                            _LOGGER.debug(
+                                "Factory info for device id=%s resolved mac=%s",
+                                device.get("id"),
+                                mac,
+                            )
                             item.credentials[mac] = {
                                 CONF_ADDRESS: mac,
                                 CONF_UUID: device.get("uuid"),
@@ -199,6 +220,26 @@ class HASSTuyaBLEDeviceManager(AbstaractTuyaBLEDeviceManager):
                                 CONF_PRODUCT_MODEL: device.get("model"),
                                 CONF_PRODUCT_NAME: device.get("product_name"),
                             }
+                        else:
+                            _LOGGER.debug(
+                                "Factory info for device id=%s has no '%s' field: %s",
+                                device.get("id"),
+                                TUYA_FACTORY_INFO_MAC,
+                                factory_info,
+                            )
+                    else:
+                        _LOGGER.debug(
+                            "Factory info response empty for device id=%s: %s",
+                            device.get("id"),
+                            fi_response,
+                        )
+                _LOGGER.debug(
+                    "Finished building cloud device cache: %d device(s) from account, %d with resolved mac",
+                    device_count,
+                    len(item.credentials),
+                )
+        else:
+            _LOGGER.debug("Devices list request failed: %s", devices_response)
 
     async def build_cache(self) -> None:
         global _cache
