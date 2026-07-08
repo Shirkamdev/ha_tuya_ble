@@ -328,6 +328,16 @@ mapping: dict[str, TuyaBLECategorySwitchMapping] = {
             ],
         },
     ),
+    "cwjwq": TuyaBLECategorySwitchMapping(
+        products={
+            "d8anh8og": [
+                TuyaBLESwitchMapping(
+                    dp_id=1,
+                    description=SwitchEntityDescription(key="switch"),
+                ),
+            ],
+        },
+    ),
 }
 
 

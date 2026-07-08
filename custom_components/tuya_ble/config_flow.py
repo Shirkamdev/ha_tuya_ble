@@ -38,7 +38,7 @@ CONF_ACCESS_SECRET = "access_secret"
 CONF_COUNTRY_CODE = "country_code"
 CONF_APP_TYPE = "tuya_app_type"
 
-from .tuya_ble import SERVICE_UUID, TuyaBLEDeviceCredentials
+from .tuya_ble import SERVICE_UUIDS, TuyaBLEDeviceCredentials
 
 from .const import (
     DOMAIN,
@@ -577,7 +577,9 @@ class TuyaBLEConfigFlow(ConfigFlow, domain=DOMAIN):
                     discovery.address in current_addresses
                     or discovery.address in self._discovered_devices
                     or discovery.service_data is None
-                    or not SERVICE_UUID in discovery.service_data.keys()
+                    or not any(
+                        uuid in discovery.service_data for uuid in SERVICE_UUIDS
+                    )
                 ):
                     continue
                 self._discovered_devices[discovery.address] = discovery

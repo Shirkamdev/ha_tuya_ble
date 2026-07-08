@@ -306,6 +306,21 @@ mapping: dict[str, TuyaBLECategorySensorMapping] = {
             ],
         },
     ),
+    "cwjwq": TuyaBLECategorySensorMapping(
+        products={
+            "d8anh8og": [
+                TuyaBLEBatteryMapping(dp_id=7),
+                TuyaBLESensorMapping(
+                    dp_id=102,
+                    description=SensorEntityDescription(
+                        key="trigger_count",
+                        state_class=SensorStateClass.TOTAL_INCREASING,
+                        entity_category=EntityCategory.DIAGNOSTIC,
+                    ),
+                ),
+            ],
+        },
+    ),
 }
 
 
