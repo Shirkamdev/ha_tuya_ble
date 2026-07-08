@@ -305,6 +305,9 @@ devices_database: dict[str, TuyaBLECategoryInfo] = {
             "d8anh8og": TuyaBLEProductInfo(
                 name="Petoneer Smart Odor Eliminator Pro",
             ),
+            "agwu93lr": TuyaBLEProductInfo(
+                name="Petoneer Smart Odor Eliminator",
+            ),
         },
     ),
 }

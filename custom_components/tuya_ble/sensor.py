@@ -307,7 +307,18 @@ mapping: dict[str, TuyaBLECategorySensorMapping] = {
     ),
     "cwjwq": TuyaBLECategorySensorMapping(
         products={
-            "d8anh8og": [
+            "d8anh8og": [  # Petoneer Smart Odor Eliminator Pro
+                TuyaBLEBatteryMapping(dp_id=7),
+                TuyaBLESensorMapping(
+                    dp_id=102,
+                    description=SensorEntityDescription(
+                        key="trigger_count",
+                        state_class=SensorStateClass.TOTAL_INCREASING,
+                        entity_category=EntityCategory.DIAGNOSTIC,
+                    ),
+                ),
+            ],
+            "agwu93lr": [  # Petoneer Smart Odor Eliminator
                 TuyaBLEBatteryMapping(dp_id=7),
                 TuyaBLESensorMapping(
                     dp_id=102,

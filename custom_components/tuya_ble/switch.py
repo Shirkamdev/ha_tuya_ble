@@ -330,7 +330,13 @@ mapping: dict[str, TuyaBLECategorySwitchMapping] = {
     ),
     "cwjwq": TuyaBLECategorySwitchMapping(
         products={
-            "d8anh8og": [
+            "d8anh8og": [  # Petoneer Smart Odor Eliminator Pro
+                TuyaBLESwitchMapping(
+                    dp_id=1,
+                    description=SwitchEntityDescription(key="switch"),
+                ),
+            ],
+            "agwu93lr": [  # Petoneer Smart Odor Eliminator
                 TuyaBLESwitchMapping(
                     dp_id=1,
                     description=SwitchEntityDescription(key="switch"),
